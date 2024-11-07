@@ -1,0 +1,226 @@
+Assignment – 3 
+Title : SQL Queries - all types of Join, Sub-Query and View
+
+Problem Statement : Write at least 10 SQL queries for suitable database application using SQL DML statements.
+
+mysql> use college
+ERROR 1049 (42000): Unknown database 'college'
+mysql> show DATABASES;
++---------------------------+
+ | Database                      |
++---------------------------+
+ | College                        |
+ | arbaaz                          |
+ | information_schema    |
+ | mysql                           |
+ | performance_schema  |
+ | sys                                |
++---------------------------+
+6 rows in set (0.01 sec)
+
+mysql> SELECT * FROM Student;
++-----+----------+--------------+-------+------+----------------+
+| roll  | name     | branch         | class  | age   | city                |
++-----+---------+---------------+-------+------+----------------+
+|    1  | Aditya   | Computer    |TY     |   20  |Pune                |
+|   67 | Pratik    | Computer    |TY     |   20  | Parbhani         |
+|   65 | Ashok   | Computer    |TY     |   20  | Dharashiv       |
+|   59 | Suraj     |Computer     |TY     |   20  | Siddhatek       |
+|   61 | Onkar    | Computer   | TY    |   20  | Solapur           |
+|   56 | Kunal    | Computer   | TY    |   20  | Pune                |
+|   68 | Ramesh | Civil           | TY    |   20  | Nashik            |
+|   25 | Suresh | Mechanical  | SY    |   19   | Nanded          |
++------+--------+------------+-------+------+-------------------+
+8 rows in set (0.00 sec)
+
+mysql> SELECT * FROM Fees;
++--------+----------+-------------+
+| name    | branch   | fees           |
++--------+----------+-------------+
+| Aditya  | Computer | 100000  |
+| Pratik   | Computer | 60000    |
+| Ashok  | Computer | 59000    |
+| Suraj    | Computer | 90000    |
+| Onkar  | Computer | 120        |
++--------+----------+-------------+
+5 rows in set (0.00 sec)
+
+
+/* INNER JOIN */
+mysql> SELECT Student.roll,Student.name,Fees.fees FROM Student INNER JOIN Fees ON Student.name = Fees.name;
++------+--------+---------+
+| roll  | name   | fees        |
++----+--------+-----------+
+|    1  | Aditya | 100000  |
+|   67 | Pratik  | 60000    |
+|   65 | Ashok | 59000    |
+|   59 | Suraj   | 90000    |
+|   61 | Onkar | 12          |
++------+--------+--------+
+5 rows in set (0.00 sec)
+
+/*LEFT JOIN */
+mysql> SELECT Student.roll,Student.name,Student.city,Fees.fees FROM Student LEFT JOIN Fees ON Student.name = Fees.name;
++-----+----------+------------+-----------+
+| roll  | name      | city           | fees        |
++---- +----------+-------------+----------+
+|    1  | Aditya    | Pune         | 100000  |
+|   67 | Pratik     | Parbhani   | 60000    |
+|   65 | Ashok    | Dharashiv | 59000    |
+|   59 | Suraj      | Siddhatek | 90000    |
+|   61 | Onkar    | Solapur     | 120        |
+|   56 | Kunal    | Pune         | NULL    |
+|   68 | Ramesh | Nashik      | NULL   |
+|   25 | Suresh   | Nanded     | NULL   |
++-----+--------+-----------+-------------+
+
+
+/*RIGHT JOIN */
+
+mysql> SELECT Student.roll,Student.name,Student.city,Fees.fees FROM Student RIGHT JOIN Fees ON Student.name = Fees.name;
++------+--------+-----------+----------+
+| roll  | name   | city           | fees       |
++---- +--------+------------+----------+
+|    1  | Aditya | Pune         | 100000  |
+|   67 | Pratik  | Parbhani   | 60000    |
+|   65 | Ashok | Dharashiv | 59000    |
+|   59 | Suraj   | Siddhatek | 90000    |
+|   61 | Onkar | Solapur     | 120        |
++----+--------+-------------+----------+
+5 rows in set (0.00 sec)
+
+
+
+
+
+
+
+
+
+
+/* CROSS JOIN */
+mysql> SELECT Student.roll,Student.name,Student.branch,Fees.fees FROM Student CROSS JOIN Fees;
++------+---------+---------------+-----------+
+| roll  | name      | branch         | fees       |
++------+---------+---------------+-----------+
+|    1  | Aditya    | Computer    | 120       |
+|    1  | Aditya    | Computer    | 90000   |
+|    1  | Aditya    | Computer    | 59000   |
+|    1  | Aditya    | Computer    | 60000   |
+|    1  | Aditya    | Computer    | 100000 |
+|   67 | Pratik     | Computer    | 120       |
+|   67 | Pratik     | Computer    | 90000   |
+|   67 | Pratik     | Computer    | 59000   |
+|   67 | Pratik     | Computer    | 60000   |
+|   67 | Pratik     | Computer    | 100000 |
+|   65 | Ashok    | Computer    | 120       |
+|   65 | Ashok    | Computer    | 90000   |
+|   65 | Ashok    | Computer    | 59000   |
+|   65 | Ashok    | Computer    | 60000   |
+|   65 | Ashok    | Computer    | 100000 |
+|   59 | Suraj      | Computer    | 120       |
+|   59 | Suraj      | Computer    | 90000   |
+|   59 | Suraj      | Computer    | 59000   |
+|   59 | Suraj      | Computer    | 60000   |
+|   59 | Suraj      | Computer    | 100000 |
+|   61 | Onkar    | Computer    | 120       |
+|   61 | Onkar    | Computer    | 90000   |
+|   61 | Onkar    | Computer    | 59000   |
+|   61 | Onkar    | Computer    | 60000   |
+|   61 | Onkar    | Computer    | 100000 |
+|   56 | Kunal    | Computer    | 120       |
+|   56 | Kunal    | Computer    | 90000   |
+|   56 | Kunal    | Computer    | 59000   |
+|   56 | Kunal    | Computer    | 60000   |
+|   56 | Kunal    | Computer    | 100000 |
+|   68 | Ramesh | Civil            | 120       |
+|   68 | Ramesh | Civil            | 90000   |
+|   68 | Ramesh | Civil            | 59000   |
+|   68 | Ramesh | Civil            | 60000   |
+|   68 | Ramesh | Civil            | 100000 |
+|   25 | Suresh   | Mechanical | 120       |
+|   25 | Suresh   | Mechanical | 90000   |
+|   25 | Suresh   | Mechanical | 59000   |
+|   25 | Suresh   | Mechanical | 60000   |
+|   25 | Suresh   | Mechanical | 100000 |
++----+--------+---------------+---------+
+40 rows in set (0.00 sec)
+
+
+
+
+/*MYSQL Subquery with WHERE Clause */
+SELECT * FROM Student WHERE name = (SELECT name FROM Fees);
+ERROR 1242 (21000): Subquery returns more than 1 row
+mysql> SELECT * FROM Student WHERE name = (SELECT name FROM Fees WHERE fees = 60000);
++------+--------+------------+-------+------+------------+
+| roll    | name   | branch     | class  | age   | city          |
++------+--------+------------+-------+------+------------+
+|   67   | Pratik  | Computer | TY    |   20   | Parbhani  |
++------+--------+------------+-------+------+------------+
+1 row in set (0.01 sec)
+
+
+/*MYSQL Subquery with comparison operators
+Less than operator (<)*/
+mysql> SELECT * FROM Fees WHERE fees < (SELECT avg(fees) FROM Fees);
++--------+------------- +--------+
+| name    | branch       | fees     |
++--------+------------- +--------+
+| Pratik   | Computer  | 60000 |
+| Ashok  | Computer  | 59000 |
+| Onkar  | Computer  | 120     |
++--------+----------+-----------+
+3 rows in set (0.00 sec)
+
+
+/*Greater than or equal to operator (>=)*/
+mysql> SELECT * FROM Fees WHERE fees >= (SELECT avg(fees) FROM Fees);
++--------+------------+-----------+
+| name    | branch      | fees        |
++--------+------------+-----------+
+| Aditya  | Computer | 100000  |
+| Suraj    | Computer | 90000    |
++--------+------------+-----------+
+2 rows in set (0.00 sec)
+
+/*MYSQL Subquery with IN and NOT IN operators 
+IN operator */
+mysql> SELECT * FROM Student WHERE name IN (SELECT name FROM Fees);
++----+---------+------------+--------+-----+------------+
+| roll | name    | branch      | class   | age | city           |
++----+---------+------------+--------+-----+------------+
+|    1  | Aditya  | Computer | TY     |   20 | Pune         |
+|   67 | Pratik   | Computer | TY     |   20 | Parbhani   |
+|   65 | Ashok  | Computer | TY     |   20 | Dharashiv |
+|   59 | Suraj    | Computer | TY    |   20 | Siddhatek  |
+|   61 | Onkar  | Computer | TY     |   20 | Solapur     |
++----+--------+-------------+-------+------+------------+
+5 rows in set (0.14 sec)
+
+/*NOT IN operator*/
+mysql> SELECT * FROM Student WHERE name NOT IN (SELECT name FROM Fees);
++----+----------+---------------+-------+------+----------+
+| roll | name      | branch         | class  | age   | city        |
++----+----------+---------------+-------+------+----------+
+|   56 | Kunal    | Computer    | TY     |   20  | Pune       |
+|   68 | Ramesh | Civil            | TY     |   20  | Nashik   |
+|   25 | Suresh   | Mechanical | SY     |   19  | Nanded   |
++----+----------+---------------+-------+------+-----------+
+3 rows in set (0.03 sec)
+
+/*MYSQL Subquery with FROM clause*/
+mysql> SELECT name FROM (SELECT * FROM Student) as A;
++----------+
+| name      |
++----------+
+| Aditya    |
+| Pratik     |
+| Ashok    |
+| Suraj      |
+| Onkar    |
+| Kunal    |
+| Ramesh |
+| Suresh   |
++---------+
+8 rows in set (0.00 sec)
