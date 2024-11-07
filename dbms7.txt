@@ -1,0 +1,108 @@
+Group - A
+Assignment 7
+
+Title: Database Trigger (All Types: Row level and Statement level triggers, Before and After Triggers). 
+Write a database trigger on Library table. The System should keep track of the records that are being updated or deleted. The old value of updated or deleted records should be added in Library_Audit table. 
+
+mysql> create database Siddhu;
+Query OK, 1 row affected (0.10 sec)
+
+mysql> use Siddhu;
+Database changed
+mysql> create table borrower(roll_no int,name varchar(20),date_of_issue date,book_name varchar(20),status varchar(20),author varchar(20));
+Query OK, 0 rows affected (0.77 sec)
+
+mysql> insert into borrower values('1','Siddhu','2024-04-27','DBMS','available','Hector Garcia');
+Query OK, 1 row affected (0.06 sec)
+
+mysql> insert into borrower values('2','Onkar','2024-03-07','TOC','not_available','Michael Sipsr');
+Query OK, 1 row affected (0.08 sec)
+
+mysql> insert into borrower values('3','Siddesh','2024-03-15','CNS','available','Andrew Tanenbaum');
+Query OK, 1 row affected (0.06 sec)
+
+mysql> insert into borrower values('4','Sarthak','2024-05-15','SPOS','available','James Paterson');
+Query OK, 1 row affected (0.08 sec)
+
+mysql> insert into borrower values('5','Ashok','2024-06-08','SPM','not_available','S.A.Kelkar');
+Query OK, 1 row affected (0.07 sec)
+
+mysql> select * from borrower;
++---------+---------+---------------+-----------+---------------+------------------+
+| roll_no | name    | date_of_issue | book_name | status        | author           |
++---------+---------+---------------+-----------+---------------+------------------+
+|       1 | Siddhu  | 2024-04-27    | DBMS      | available     | Hector Garcia    |
+|       2 | Onkar   | 2024-03-07    | TOC       | not_available | Michael Sipsr    |
+|       3 | Siddesh | 2024-03-15    | CNS       | available     | Andrew Tanenbaum |
+|       4 | Sarthak | 2024-05-15    | SPOS      | available     | James Paterson   |
+|       5 | Ashok   | 2024-06-08    | SPM       | not_available | S.A.Kelkar       |
++---------+---------+---------------+-----------+---------------+------------------+
+5 rows in set (0.00 sec)
+
+mysql> delimiter //
+mysql> create trigger library after insert on borrower for each row
+    -> begin
+    -> insert into audit1 values(new.roll_no,new.name,new.date_of_issue,new.book_name,new.status,new.author,current_timestamp);
+    -> end;
+    -> //
+Query OK, 0 rows affected (0.09 sec)
+
+insert into borrower values('6','Suraj','2024-02-14','OOP','available','Balagurusamy');
+    -> //
+Query OK, 1 row affected (0.11 sec)
+
+mysql> select * from borrower;
+    -> //
++---------+---------+---------------+-----------+---------------+------------------+
+| roll_no | name    | date_of_issue | book_name | status        | author           |
++---------+---------+---------------+-----------+---------------+------------------+
+|       1 | Siddhu  | 2024-04-27    | DBMS      | available     | Hector Garcia    |
+|       2 | Onkar   | 2024-03-07    | TOC       | not_available | Michael Sipsr    |
+|       3 | Siddesh | 2024-03-15    | CNS       | available     | Andrew Tanenbaum |
+|       4 | Sarthak | 2024-05-15    | SPOS      | available     | James Paterson   |
+|       5 | Ashok   | 2024-06-08    | SPM       | not_available | S.A.Kelkar       |
+|       6 | Suraj   | 2024-02-14    | OOP       | available     | Balagurusamy     |
++---------+---------+---------------+-----------+---------------+------------------+
+6 rows in set (0.00 sec)
+
+mysql> select * from audit1;
+    -> //
++---------+-------+---------------+-----------+-----------+--------------+----------+
+| roll_no | name  | date_of_issue | book_name | status    | author       | ts       |
++---------+-------+---------------+-----------+-----------+--------------+----------+
+|       6 | Suraj | 2024-02-14    | OOP       | available | Balagurusamy | 11:32:39 |
++---------+-------+---------------+-----------+-----------+--------------+----------+
+1 row in set (0.00 sec)
+
+mysql> delimiter //
+mysql> create trigger library1 after update on borrower for each row
+    -> begin
+    -> insert into audit1 values(new.roll_no,new.name,new.date_of_issue,new.book_name,new.status,new.author,current_timestamp);
+    -> end;
+    -> //
+Query OK, 0 rows affected (0.10 sec)
+
+mysql> update borrower set roll_no='10',book_name='Java' where name='Onkar';
+    -> //
+Query OK, 1 row affected (0.08 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+
+
+
+
+
+mysql> select * from borrower;
+    -> //
++---------+---------+---------------+-----------+---------------+------------------+
+| roll_no | name    | date_of_issue | book_name | status        | author           |
++---------+---------+---------------+-----------+---------------+------------------+
+|       1 | Siddhu  | 2024-04-27    | DBMS      | available     | Hector Garcia    |
+|      10 | Onkar   | 2024-03-07    | Java      | not_available | Michael Sipsr    |
+|       3 | Siddesh | 2024-03-15    | CNS       | available     | Andrew Tanenbaum |
+|       4 | Sarthak | 2024-05-15    | SPOS      | available     | James Paterson   |
+|       5 | Ashok   | 2024-06-08    | SPM       | not_available | S.A.Kelkar       |
+|       6 | Suraj   | 2024-02-14    | OOP       | available     | Balagurusamy     |
++---------+---------+---------------+-----------+---------------+------------------+
+6 rows in set (0.00 sec)
+
