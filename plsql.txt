@@ -1,0 +1,78 @@
+use sd;
+set sql_safe_updates=0;
+
+SELECT * from sdt;
+SELECT * from sdt2;
+SELECT * from temp;
+
+
+select sdt.id,sdt.name,sdt2.id,sdt2.name
+from sdt left join sdt2 on sdt.id=sdt2.id;
+ 
+update sdt set mark=90 where id=1;
+create view myview AS 
+select id,name from sdt2;
+select * from myview;
+
+create table temp(id int , name varchar(20) , city varchar(20) , mark int , depname varchar(20));
+
+/*stored trigger*/
+
+delimiter //
+create trigger t1 before update on sdt 
+for each row 
+begin 
+insert into temp values (old.id , old.name , old.city , old.mark , old.depname);
+end
+//
+
+update sdt set name="rahul" where id =2;
+
+
+/*stored Procedure*/
+
+delimiter //
+create procedure upd(r int , newname varchar(20))
+begin
+update sdt set city = newname where id = r;
+select * from sdt;
+end
+//
+
+call upd(5,"nagar");
+call upd(8,"mumbai");
+
+
+/*stored function*/
+
+delimiter //
+create function up(newname varchar(20))
+returns varchar(20)
+deterministic
+begin
+return newname;
+end
+//
+
+select up("rahul") as name;
+
+/*stored function*/
+
+delimiter //
+create function ad(a int , b int)
+returns int
+deterministic
+begin
+return a+b;
+end
+//
+
+select ad(23,45) as result;
+
+
+
+
+
+
+
+
