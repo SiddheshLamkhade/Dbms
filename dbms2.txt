@@ -1,0 +1,144 @@
+GROUP - A 
+Assignment 2 
+
+SQL Queries: 
+a. Design and Develop SQL DDL statements which demonstrate the use of SQL objects such as Table, View, Index, Sequence, Synonym, different constraints etc. 
+b. Write at least 10 SQL queries on the suitable database application using SQL DML statements. 
+
+mysql> CREATE DATABASE College;
+Query OK, 1 row affected (0.15 sec)
+
+mysql> USE College;
+Database changed
+mysql> CREATE TABLE Student(roll integer(20),name varchar(200),branch varchar(200),class varchar(20),age integer(40),city varchar(200));
+Query OK, 0 rows affected, 2 warnings (0.81 sec)
+
+
+mysql> INSERT INTO Student VALUES(1,'Raju','Computer','TY',20,'Pune');
+Query OK, 1 row affected (0.12 sec)
+
+mysql> INSERT INTO Student VALUES(67,'Siddh','Computer','TY',20,'Pune');
+Query OK, 1 row affected (0.08 sec)
+
+mysql> INSERT INTO Student VALUES(65,'Aman','Computer','TY',20,'Dharashiv');
+Query OK, 1 row affected (0.06 sec)
+
+mysql> INSERT INTO Student VALUES(61,'Onkar','Computer','TY',20,'Solapur');
+Query OK, 1 row affected (0.08 sec)
+
+mysql> INSERT INTO Student VALUES(59,'Suraj','Computer','TY',20,'Kalas');
+Query OK, 1 row affected (0.08 sec)
+
+mysql> SELECT * FROM Student;
++------+--------+----------+-------+------+-----------+
+| roll | name   | branch   | class | age  | city      |
++------+--------+----------+-------+------+-----------+
+|    1 | Raju | Computer | TY    |   20 | Pune      |
+|   67 | Siddh | Computer | TY    |   20 | Pune  |
+|   65 | Aman  | Computer | TY    |   20 | Dharashiv |
+|   61 | Onkar  | Computer | TY    |   20 | Solapur   |
+|   59 | Suraj  | Computer | TY    |   20 | Kalas |
++------+--------+----------+-------+------+-----------+
+5 rows in set (0.00 sec)
+
+mysql> DELETE FROM Student WHERE roll=59;
+Query OK, 1 row affected (0.07 sec)
+
+
+
+
+
+
+
+
+
+mysql> SELECT * FROM Student;
++------+--------+----------+-------+------+-----------+
+| roll | name   | branch   | class | age  | city      |
++------+--------+----------+-------+------+-----------+
+|    1 | Raju | Computer | TY    |   20 | Pune      |
+|   67 | Siddh | Computer | TY    |   20 | Pune  |
+|   65 | Aman  | Computer | TY    |   20 | Dharashiv |
+|   61 | Onkar  | Computer | TY    |   20 | Solapur   |
++------+--------+----------+-------+------+-----------+
+4 rows in set (0.00 sec)
+
+mysql> UPDATE Student SET age=19 WHERE name='Raju';
+Query OK, 1 row affected (0.09 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM Student;
++------+--------+----------+-------+------+-----------+
+| roll | name   | branch   | class | age  | city      |
++------+--------+----------+-------+------+-----------+
+|    1 | Raju | Computer | TY    |   19 | Pune      |
+|   67 | Siddh | Computer | TY    |   20 | Pune  |
+|   65 | Aman  | Computer | TY    |   20 | Dharashiv |
+|   61 | Onkar  | Computer | TY    |   20 | Solapur   |
++------+--------+----------+-------+------+-----------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT name FROM Students WHERE roll > 60;
+ERROR 1146 (42S02): Table 'College.Students' doesn't exist
+mysql> SELECT name FROM Student WHERE roll > 60;
+
++--------+
+| name   |
++--------+
+| Siddh |
+| Aman  |
+| Onkar  |
++--------+
+3 rows in set (0.00 sec)
+
+mysql> CREATE VIEW Student_View AS SELECT roll,name,city FROM Student;
+Query OK, 0 rows affected (0.22 sec)
+
+mysql> SELECT * FROM Student_View;
++------+--------+-----------+
+| roll | name   | city      |
++------+--------+-----------+
+|    1 | Raju | Pune      |
+|   67 | Siddh | Pune  |
+|   65 | Aman  | Dharashiv |
+|   61 | Onkar  | Solapur   |
++------+--------+-----------+
+4 rows in set (0.00 sec)
+
+mysql> ALTER TABLE Student ADD address varchar(250);
+Query OK, 0 rows affected (0.39 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+
+
+
+
+
+mysql> SELECT * FROM Student;
++------+--------+----------+-------+------+-----------+---------+
+| roll | name   | branch   | class | age  | city      | address |
++------+--------+----------+-------+------+-----------+---------+
+|    1 | Raju | Computer | TY    |   19 | Pune      | NULL    |
+|   67 | Siddh | Computer | TY    |   20 | Pune  | NULL    |
+|   65 | Aman  | Computer | TY    |   20 | Dharashiv | NULL    |
+|   61 | Onkar  | Computer | TY    |   20 | Solapur   | NULL    |
++------+--------+----------+-------+------+-----------+---------+
+4 rows in set (0.00 sec)
+
+mysql> ALTER TABLE Student DROP COLUMN address;
+Query OK, 0 rows affected (1.20 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM Student;
++------+--------+----------+-------+------+-----------+
+| roll | name   | branch   | class | age  | city      |
++------+--------+----------+-------+------+-----------+
+|    1 | Raju | Computer | TY    |   19 | Pune      |
+|   67 | Siddh | Computer | TY    |   20 | Pune  |
+|   65 | Aman  | Computer | TY    |   20 | Dharashiv |
+|   61 | Onkar  | Computer | TY    |   20 | Solapur   |
++------+--------+----------+-------+------+-----------+
+4 rows in set (0.00 sec)
+
+mysql> 
+
