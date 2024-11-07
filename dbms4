@@ -1,0 +1,95 @@
+Assignment 4
+Consider Tables: 
+1. Borrower(Roll_no, Name, DateofIssue, NameofBook, Status) 
+2. Fine(Roll_no,Date,Amt) 
+•	Accept Roll_no and NameofBook from user. 
+•	Check the number of days (from date of issue). 
+•	If days are between 15 to 30 then fine amount will be Rs 5per day. 
+•	If no. of days>30, per day fine will be Rs 50 per day and for days less than 30, Rs. 5 per day. 
+•	After submitting the book, status will change from I to R. 
+•	If condition of fine is true, then details will be stored into fine table. 
+•	Also handles the exception by named exception handler or user define exception handler. 
+
+
+mysql> CREATE DATABASE Pratik;
+Query OK, 1 row affected (0.03 sec)
+
+mysql> USE Pratik;
+Database changed
+mysql> CREATE TABLE Borrower(roll_no int,name varchar(20),DOI date,book_name varchar(20),status varchar(20));
+Query OK, 0 rows affected (0.07 sec)
+
+mysql> INSERT INTO Borrower VALUES(1,'Pratik',2024-07-01,'DBMS','issued');
+ERROR 1292 (22007): Incorrect date value: '2016' for column 'DOI' at row 1
+mysql> INSERT INTO Borrower VALUES(1,'Pratik','2024-07-01','DBMS','issued');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO Borrower VALUES(2,'Ashok','2024-06-01','OOP','issued');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO Borrower VALUES(3,'Onkar','2024-05-01','TOC','returned');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO Borrower VALUES(4,'Suraj','2024-06-15','CNS','returned');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO Borrower VALUES(5,'Sarthak','2024-05-15','SPM','issued');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM Borrower;
++---------+---------+------------+-----------+----------+
+| roll_no | name    | DOI        | book_name | status   |
++---------+---------+------------+-----------+----------+
+|       1 | Pratik  | 2024-07-01 | DBMS      | issued   |
+|       2 | Ashok   | 2024-06-01 | OOP       | issued   |
+|       3 | Onkar   | 2024-05-01 | TOC       | returned |
+|       4 | Suraj   | 2024-06-15 | CNS       | returned |
+|       5 | Sarthak | 2024-05-15 | SPM       | issued   |
++---------+---------+------------+-----------+----------+
+5 rows in set (0.00 sec)
+
+mysql> CREATE TABLE Fine(roll_no int,fine_date date,amount varchar(20));
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> SHOW TABLES;
++------------------+
+| Tables_in_pratik |
++------------------+
+| borrower         |
+| fine             |
++------------------+
+2 rows in set (0.02 sec)
+
+mysql> delimiter //
+mysql> create procedure fine_c(IN rno int(3),bname varchar(20))
+    -> begin
+    -> declare i_date date;
+    -> declare diff int;
+    -> declare fine_amt int;
+    -> declare exit handler for sqlexception select 'Table not Found';
+    -> select DOI into i_date from borrower where roll_no=rno and book_name=
+bname;
+    -> select datediff(curdate(),i_date) into diff;
+    -> if(diff>15 and diff<=30) then
+    -> set fine_amt = diff*5;
+    -> insert into fine values(rno,curdate(),fine_amt);
+    -> elseif(diff>30) then
+    -> set fine_amt = 15*5 + (diff-30)*50;
+    -> insert into fine values(rno,curdate(),fine_amt);
+    -> end if;
+    ->  update borrower set status='returned' where rollno=rno and book_name=bname;
+    -> end;
+    -> //
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+mysql> call fine_c(1,'DBMS');//
+1 row in set (0.01 sec)
+
+mysql> select * from fine;
+    -> //
++---------+------------+--------+
+| roll_no | fine_date  | amount |
++---------+------------+--------+
+|       1 | 2024-08-01 | 125    |
++---------+------------+--------+
+1 rows in set (0.00 sec)
