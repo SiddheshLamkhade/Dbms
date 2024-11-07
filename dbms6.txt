@@ -1,0 +1,114 @@
+Group – A 
+Assignment 6
+
+Title : Write a PL/SQL block of code using parameterized Cursor that will merge the data available in the newly created table N_RollCall with the data available in the table O_RollCall. If the data in the first table already exist in the second table then that data should be skipped. 
+
+mysql> create database Siddhu;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use Siddhu;
+Database changed
+mysql> create table o_rollcall(roll_no int, name varchar(20),address varchar(20));
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> create table n_rollcall(roll_no int, name varchar(20),address varchar(20));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> insert into o_rollcall values('1','Siddhu','Parbhani');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into o_rollcall values('2','Onkar','Solapur');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into o_rollcall values('3','Ashok','Dharashiv');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into o_rollcall values('4','Suraj','Pune');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into o_rollcall values('5','Sarthak','Ahemadnagar');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> delimiter //
+mysql> create procedure p3(in r1 int)
+    -> begin
+    -> declare r2 int;
+    -> declare exit_loop boolean;
+    -> declare c1 cursor for select roll_no from o_rollcall where roll_no > r1;
+    -> declare continue handler for not found set exit_loop = true;
+    -> open c1;
+    -> e_loop : loop
+    -> fetch c1 into r2;
+    -> if not exists(select * from n_rollcall where roll_no = r2)
+    -> then
+    -> insert into n_rollcall select * from o_rollcall where roll_no = r2;
+    -> end if;
+    -> if exit_loop
+    -> then
+    -> close c1;
+    -> leave e_loop;
+    -> end if;
+    -> end loop e_loop;
+    -> end;
+    -> //
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> call p3(3);
+    -> //
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from n_rollcall;
+    -> //
++---------+---------+-------------+
+| roll_no | name    | address     |
++---------+---------+-------------+
+|       4 | Suraj   | Pune        |
+|       5 | Sarthak | Ahemadnagar |
++---------+---------+-------------+
+2 rows in set (0.00 sec)
+
+mysql> call p3(0);
+    -> //
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from n_rollcall;
+    -> //
++---------+---------+-------------+
+| roll_no | name    | address     |
++---------+---------+-------------+
+|       4 | Suraj   | Pune        |
+|       5 | Sarthak | Ahemadnagar |
+|       1 | Siddhu  | Parbhani    |
+|       2 | Onkar   | Solapur     |
+|       3 | Ashok   | Dharashiv   |
++---------+---------+-------------+
+5 rows in set (0.00 sec)
+
+mysql> insert into o_rollcall values('6','Mahesh','Kolhapur');
+    -> //
+Query OK, 1 row affected (0.00 sec)
+
+mysql> call p3(4);
+    -> //
+Query OK, 0 rows affected (0.00 sec)
+
+
+
+
+
+
+mysql> select * from n_rollcall;
+    -> //
++---------+---------+-------------+
+| roll_no | name    | address     |
++---------+---------+-------------+
+|       4 | Suraj   | Pune        |
+|       5 | Sarthak | Ahemadnagar |
+|       1 | Siddhu  | Parbhani    |
+|       2 | Onkar   | Solapur     |
+|       3 | Ashok   | Dharashiv   |
+|       6 | Mahesh  | Kolhapur    |
++---------+---------+-------------+
+6 rows in set (0.00 sec)
+
+mysql>
